@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogoMark } from "./Logo";
+import Logo from "./Logo";
 import type { NavSection } from "@/lib/nav";
 
 const INFO_LINKS = [
@@ -19,13 +19,7 @@ export default function Footer({ nav }: { nav: NavSection[] }) {
       <div className="container-max grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
         {/* Бренд */}
         <div>
-          <Link href="/" className="flex items-center gap-2.5">
-            <LogoMark className="h-9 w-9" />
-            <span className="font-serif leading-none">
-              <span className="block text-xl font-bold">your</span>
-              <span className="-mt-1 block text-xl font-bold text-accent">health</span>
-            </span>
-          </Link>
+          <Logo light />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/70">
             Магазин витаминов и пищевых добавок. Заботимся о вашем здоровье с
             любовью к природе.

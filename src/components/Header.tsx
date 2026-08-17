@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Menu,
   Search,
@@ -25,6 +26,7 @@ export default function Header({ nav }: { nav: NavSection[] }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { cartCount, favorites } = useStore();
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -32,6 +34,15 @@ export default function Header({ nav }: { nav: NavSection[] }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Светлый хедер: только на главной, пока не проскроллили (поверх тёмного hero)
+  const light = !scrolled && pathname === "/";
+
+  const iconColor = light ? "text-[#f5efdd]" : "text-icon-primary";
+  const iconHover = light ? "hover:bg-white/15" : "hover:bg-muted";
+  const navColor = light ? "text-[#f5efdd]" : "text-text-secondary";
+  const navHover = light ? "hover:text-white" : "hover:text-icon-primary";
+  const navBorder = light ? "border-white/15" : "border-border";
 
   return (
     <>
@@ -41,32 +52,31 @@ export default function Header({ nav }: { nav: NavSection[] }) {
             scrolled ? "bg-white/95 shadow-sm backdrop-blur" : "bg-transparent"
           }`}
         >
-          {/* Верхняя строка */}
           <div className="container-max flex h-[64px] items-center justify-between gap-3 lg:h-[var(--header-height)]">
             {/* Слева */}
             <div className="flex flex-1 items-center gap-2">
               <button
                 type="button"
                 onClick={() => setMenuOpen(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-full text-icon-primary transition-colors hover:bg-muted lg:hidden"
+                className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors lg:hidden ${iconColor} ${iconHover}`}
                 aria-label="Открыть меню"
               >
                 <Menu className="size-[26px]" aria-hidden="true" />
               </button>
-              <span className="hidden items-center gap-1.5 text-sm font-medium text-text-secondary md:flex">
+              <span className={`hidden items-center gap-1.5 text-sm font-medium md:flex ${navColor}`}>
                 <MapPin className="size-[18px] text-accent" aria-hidden="true" />
                 Бишкек
               </span>
             </div>
 
             {/* Центр — логотип */}
-            <Logo className="mx-auto" />
+            <Logo className="mx-auto" light={light} />
 
             {/* Справа */}
             <div className="flex flex-1 items-center justify-end gap-0.5 sm:gap-1">
               <Link
                 href="/favorites"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full text-icon-primary transition-colors hover:bg-muted"
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-colors ${iconColor} ${iconHover}`}
                 aria-label="Избранное"
               >
                 <Heart className="size-[26px]" aria-hidden="true" />
@@ -78,14 +88,14 @@ export default function Header({ nav }: { nav: NavSection[] }) {
               </Link>
               <Link
                 href="/search"
-                className="hidden h-11 w-11 items-center justify-center rounded-full text-icon-primary transition-colors hover:bg-muted sm:flex"
+                className={`hidden h-11 w-11 items-center justify-center rounded-full transition-colors sm:flex ${iconColor} ${iconHover}`}
                 aria-label="Поиск"
               >
                 <Search className="size-[26px]" aria-hidden="true" />
               </Link>
               <Link
                 href="/cart"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full text-icon-primary transition-colors hover:bg-muted"
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-colors ${iconColor} ${iconHover}`}
                 aria-label="Корзина"
               >
                 <ShoppingCart className="size-[26px]" aria-hidden="true" />
@@ -99,19 +109,16 @@ export default function Header({ nav }: { nav: NavSection[] }) {
           </div>
 
           {/* Десктопная навигация */}
-          <nav
-            className="hidden border-t border-border lg:block"
-            aria-label="Основная навигация"
-          >
+          <nav className={`hidden border-t lg:block ${navBorder}`} aria-label="Основная навигация">
             <div className="container-max flex h-14 items-center justify-center gap-1">
               {nav.map((section) => (
-                <DropdownItem key={section.key} section={section} />
+                <DropdownItem key={section.key} section={section} light={light} />
               ))}
               {STATIC_LINKS.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="px-4 py-2 text-base font-medium text-text-secondary transition-opacity hover:text-icon-primary hover:opacity-80"
+                  className={`px-4 py-2 text-base font-medium transition-colors ${navColor} ${navHover}`}
                 >
                   {l.label}
                 </Link>
@@ -126,16 +133,28 @@ export default function Header({ nav }: { nav: NavSection[] }) {
   );
 }
 
-function DropdownItem({ section }: { section: NavSection }) {
+function DropdownItem({
+  section,
+  light,
+}: {
+  section: NavSection;
+  light: boolean;
+}) {
+  const navColor = light ? "text-[#f5efdd]" : "text-text-secondary";
+  const navHover = light ? "hover:text-white" : "hover:text-icon-primary";
+  const chevron = light
+    ? "text-[#f5efdd]/70 group-hover:text-white"
+    : "text-icon-inactive group-hover:text-icon-primary";
+
   return (
     <div className="group relative">
       <Link
         href={section.href}
-        className="flex items-center gap-1.5 px-4 py-2 text-base font-medium text-text-secondary transition-colors hover:text-icon-primary"
+        className={`flex items-center gap-1.5 px-4 py-2 text-base font-medium transition-colors ${navColor} ${navHover}`}
       >
         {section.label}
         <ChevronDown
-          className="size-4 text-icon-inactive transition-colors group-hover:text-icon-primary"
+          className={`size-4 transition-colors ${chevron}`}
           aria-hidden="true"
         />
       </Link>
