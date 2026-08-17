@@ -94,6 +94,36 @@ src/
   источниках — используется засечковый fallback (Georgia).
 - Корзина/избранное/сравнение хранятся в `localStorage` браузера.
 
+## Деплой на Vercel и автодеплой
+
+Проект подготовлен для Vercel (Next.js). Есть два пути:
+
+**1. Через GitHub-интеграцию (рекомендуется, автоматически деплоит при push):**
+1. В Vercel: *Settings → Integrations → GitHub → Add*, установите GitHub App и
+   предоставьте доступ к репозиторию (в т.ч. приватному).
+2. *Add New Project → Import* репозиторий `bbybxx/yourhealth`.
+3. Vercel сам определит Next.js и будет деплоить при каждом push в `main`,
+   включая коммиты от ежедневного парсинга (`daily-update`).
+
+**2. Через CLI / GitHub Actions (без GitHub-интеграции):**
+1. Получите токен: Vercel → *Account Settings → Tokens → Create Token*.
+2. Добавьте секреты в репозиторий GitHub (*Settings → Secrets → Actions*):
+   `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`.
+   (`VERCEL_ORG_ID` и `VERCEL_PROJECT_ID` видны после первого деплоя —
+   `vercel link` / `vercel deploy`.)
+3. Workflow `.github/workflows/vercel-deploy.yml` задеплоит при каждом push.
+
+Для первого локального деплоя:
+```bash
+npm install
+npx vercel link   # привяжет проект (нужен токен: vercel login)
+npx vercel --prod
+```
+
+> Приватный репозиторий: для пути 1 нужно, чтобы Vercel GitHub App имел доступ
+> к приватному репозиторию (Install → Only select repositories → ваши).
+
+
 ## Уведомления о заказах в Telegram
 
 При оформлении заказа заявка отправляется в Telegram-бот. Токен и `chat_id`

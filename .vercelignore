@@ -1,0 +1,8 @@
+node_modules
+.next
+logs
+*.log
+scraper
+update_site.sh
+.env*
+.git
