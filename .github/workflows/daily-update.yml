@@ -1,0 +1,53 @@
+name: Daily update
+
+on:
+  schedule:
+    # Ежедневно в 05:00 по UTC
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-and-export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install scraper dependencies
+        run: |
+          cd scraper
+          pip install -r requirements.txt
+
+      - name: Scrape www.vitaminy.kg
+        run: |
+          cd scraper
+          python scraper.py
+
+      - name: Export data (prices ×2.1–2.85)
+        run: node scripts/export-data.mjs
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "yourhealth bot"
+          git config user.email "actions@github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Нет изменений"
+          else
+            git commit -m "chore: daily data update $(date -u +%Y-%m-%d)"
+            git push
+          fi

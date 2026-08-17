@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+:root {
+  /* Брендовые цвета */
+  --brand: #0a3522;
+  --brand-dark: #06241a;
+  --brand-soft: #eaf2ec;
+  --accent: #f08041;
+  --accent-dark: #d96a2e;
+  --leaf: #a7e16c;
+
+  /* Текст и иконки */
+  --text-primary: #15352a;
+  --text-secondary: #4b6257;
+  --text-base: #3d4f47;
+  --icon-primary: #0a3522;
+  --icon-inactive: #9aa8a0;
+
+  /* Заливки */
+  --btn-fill: #0a3522;
+  --muted: #f3f5f3;
+  --bg-soft: #f7faf7;
+  --border: #e3e9e5;
+
+  --header-height: 96px;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-leaf: var(--leaf);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-base: var(--text-base);
+  --color-icon-primary: var(--icon-primary);
+  --color-icon-inactive: var(--icon-inactive);
+
+  --color-btn-fill: var(--btn-fill);
+  --color-muted: var(--muted);
+  --color-bg-soft: var(--bg-soft);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-heuristica), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--text-base);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Тонкий кастомный скроллбар для каруселей */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer utilities {
+  .container-max {
+    max-width: 1344px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+}
+
